@@ -21,6 +21,10 @@ const Wrapper = styled.div`
   height: 50%;
 `
 
+const EditorContainer = styled.div`
+  flex: 1;
+`
+
 type EditorProps = {
   value: string
   setValue: (value: string) => void
@@ -36,27 +40,29 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
         value={value}
         onChange={event => setValue(event.target.value)}
       />
-      <AceEditor
-        mode="xml"
-        theme="textmate"
-        //name="blah2"
-        //onLoad={this.onLoad}
-        onChange={(...args) => {
-          console.log('ace on change', ...args)
-        }}
-        fontSize={14}
-        showPrintMargin={true}
-        showGutter={true}
-        highlightActiveLine={true}
-        value={value}
-        setOptions={{
-          enableBasicAutocompletion: true,
-          enableLiveAutocompletion: true,
-          enableSnippets: false,
-          showLineNumbers: true,
-          tabSize: 2
-        }}
-      />
+      <EditorContainer>
+        <AceEditor
+          mode="xml"
+          theme="textmate"
+          //name="blah2"
+          //onLoad={this.onLoad}
+          onChange={(...args) => {
+            console.log('ace on change', ...args)
+          }}
+          fontSize={14}
+          showPrintMargin={true}
+          showGutter={true}
+          highlightActiveLine={true}
+          value={value}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: false,
+            showLineNumbers: true,
+            tabSize: 2
+          }}
+        />
+      </EditorContainer>
 
       <button>Paste</button>
       <button>Edit</button>
