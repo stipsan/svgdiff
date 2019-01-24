@@ -1,6 +1,10 @@
 const { version } = require('react/package.json')
 
-const rules = { 'react/react-in-jsx-scope': 'off' }
+const plugins = ['react-hooks']
+const rules = {
+  'react-hooks/rules-of-hooks': 'error',
+  'react/react-in-jsx-scope': 'off'
+}
 
 const overrides = [
   {
@@ -28,6 +32,7 @@ const overrides = [
 module.exports = {
   extends: 'react-app',
   settings: { react: { version } },
+  plugins,
   rules,
   overrides
 }
