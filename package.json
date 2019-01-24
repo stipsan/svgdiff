@@ -10,6 +10,7 @@
     "test": "tsc && yarn lint"
   },
   "dependencies": {
+    "@rehooks/component-size": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^1.1.0",
     "@typescript-eslint/parser": "^1.1.0",
     "@zeit/next-css": "canary",
@@ -20,6 +21,7 @@
     "polished": "^2.3.3",
     "postcss-preset-env": "^6.5.0",
     "react": "next",
+    "react-ace": "^6.3.2",
     "react-dom": "next"
   },
   "devDependencies": {

@@ -2,6 +2,7 @@ import { styled } from 'linaria/react'
 import React, { useState } from 'react'
 import DiffPanel from '../components/DiffPanel'
 import EditorPanel from '../components/EditorPanel'
+import { defaultSvg } from '../data'
 
 const Layout = styled.div`
   display: flex;
@@ -9,14 +10,16 @@ const Layout = styled.div`
 `
 
 const Index: React.FunctionComponent = () => {
-  const [previous, setPrevious] = useState(false)
-  const [current, setCurrent] = useState(false)
+  const [previous, setPrevious] = useState(defaultSvg)
+  const [current, setCurrent] = useState('')
 
   return (
     <Layout>
       <EditorPanel
-        setPrevious={payload => setPrevious(payload)}
-        setCurrent={payload => setCurrent(payload)}
+        previous={previous}
+        current={current}
+        setPrevious={setPrevious}
+        setCurrent={setCurrent}
       />
       <DiffPanel previous={previous} current={current} />
     </Layout>

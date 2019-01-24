@@ -1,30 +1,27 @@
 import { styled } from 'linaria/react'
 import React from 'react'
+import Editor from './Editor'
 
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
-  width: 33%;
+  width: 50%;
 `
 
-const Editor = styled.div``
-
 type EditorPanelProps = {
+  previous: string
+  current: string
   setPrevious: (payload: string) => void
   setCurrent: (payload: string) => void
 }
 
 const EditorPanel: React.FunctionComponent<EditorPanelProps> = props => {
-  const { setPrevious, setCurrent } = props
+  const { previous, current, setPrevious, setCurrent } = props
 
   return (
     <Wrapper>
-      <Editor>
-        <textarea />
-      </Editor>
-      <Editor>
-        <textarea />
-      </Editor>
+      <Editor value={previous} setValue={setPrevious} />
+      <Editor value={current} setValue={setCurrent} />
     </Wrapper>
   )
 }

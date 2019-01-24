@@ -6,8 +6,25 @@ const Wrapper = styled.section`
   flex: 1;
 `
 
-const DiffPanel: React.FunctionComponent = () => {
-  return <Wrapper>@TODO</Wrapper>
+const Preview = styled.div`
+  svg {
+    min-width: 32px;
+  }
+`
+
+type DiffPanelProps = {
+  previous: string
+  current: string
+}
+
+const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
+  const { previous, current } = props
+
+  return (
+    <Wrapper>
+      <Preview dangerouslySetInnerHTML={{ __html: previous }} />
+    </Wrapper>
+  )
 }
 
 export default DiffPanel
