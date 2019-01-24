@@ -1,6 +1,7 @@
+import useComponentSize from '@rehooks/component-size'
 import { styled } from 'linaria/react'
 import dynamic from 'next/dynamic'
-import React from 'react'
+import React, { useRef } from 'react'
 import { AceEditorProps } from 'react-ace'
 import Upload from './Upload'
 
@@ -32,15 +33,13 @@ type EditorProps = {
 
 const Editor: React.FunctionComponent<EditorProps> = props => {
   const { value, setValue } = props
+  const ref = useRef(null)
+  const { width, height } = useComponentSize(ref)
 
   return (
     <Wrapper>
       <Upload onUpload={setValue} />
-      <textarea
-        value={value}
-        onChange={event => setValue(event.target.value)}
-      />
-      <EditorContainer>
+      <EditorContainer ref={ref}>
         <AceEditor
           mode="xml"
           theme="textmate"
@@ -54,6 +53,8 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
           showGutter={true}
           highlightActiveLine={true}
           value={value}
+          width={`${width}px`}
+          height={`${height}px`}
           setOptions={{
             enableBasicAutocompletion: true,
             enableLiveAutocompletion: true,

@@ -2,7 +2,7 @@ import { styled } from 'linaria/react'
 import React, { useState } from 'react'
 import DiffPanel from '../components/DiffPanel'
 import EditorPanel from '../components/EditorPanel'
-import { defaultSvg } from '../data'
+import { alternativeSvg, defaultSvg } from '../data'
 
 const Layout = styled.div`
   display: flex;
@@ -11,7 +11,7 @@ const Layout = styled.div`
 
 const Index: React.FunctionComponent = () => {
   const [previous, setPrevious] = useState(defaultSvg)
-  const [current, setCurrent] = useState('')
+  const [current, setCurrent] = useState(alternativeSvg)
 
   return (
     <Layout>
