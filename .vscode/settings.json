@@ -5,5 +5,8 @@
     "html",
     "typescript",
     "typescriptreact"
-  ]
+  ],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }
