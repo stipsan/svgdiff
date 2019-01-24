@@ -5,6 +5,7 @@ import Editor from './Editor'
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
+  padding: 20px 25px;
   width: 50%;
 `
 

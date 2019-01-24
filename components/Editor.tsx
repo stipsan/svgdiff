@@ -21,7 +21,12 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 50%;
-  padding: 20px 10px 20px 25px;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &:not(:first-child) {
+    margin-top: 20px;
+  }
 `
 
 const EditorContainer = styled.div`
@@ -35,6 +40,10 @@ type EditorProps = {
 
 const Toolbar = styled.div`
   display: flex;
+  justify-content: space-evenly;
+  padding: 4px 8px;
+  background: hsla(72, 9%, 22%, 1);
+  color: white;
 `
 
 // Upload or paste/edit
@@ -49,8 +58,9 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
       <Toolbar>
         <Upload onUpload={setValue} />
         <label>
-          <input type="checkbox" defaultChecked /> Update live typing
+          <input type="checkbox" defaultChecked /> Update while typing
         </label>
+        <button>Prettify</button>
       </Toolbar>
       <EditorContainer ref={ref}>
         <AceEditor
