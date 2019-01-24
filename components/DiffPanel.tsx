@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 const Wrapper = styled.section`
   display: flex;
   flex: 1;
+  flex-direction: column;
 `
 
 const Preview = styled.div`
@@ -12,33 +13,80 @@ const Preview = styled.div`
   }
 `
 
-type DiffPanelProps = {
+const TwoUpWrapper = styled.section`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+`
+type TwoUpProps = {
   previous: string
   current: string
 }
-
-const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
+const TwoUp: React.FunctionComponent<TwoUpProps> = props => {
   const { previous, current } = props
-  const [test, setTest] = useState('')
-
-  useEffect(() => {
-    setTest(btoa(previous))
-  }, [previous])
 
   return (
-    <Wrapper>
+    <TwoUpWrapper>
       <img
-        src={`data:image/svg+xml;base64,${test}`}
+        src={previous}
+        title="original"
         onLoad={event =>
           console.log(
+            'previous',
             event.target,
             event.currentTarget.naturalWidth,
             event.currentTarget.naturalHeight
           )
         }
       />
-      <Preview dangerouslySetInnerHTML={{ __html: previous }} />
-      <Preview dangerouslySetInnerHTML={{ __html: current }} />
+      <img
+        src={current}
+        title="modified"
+        onLoad={event =>
+          console.log(
+            'current',
+            event.target,
+            event.currentTarget.naturalWidth,
+            event.currentTarget.naturalHeight
+          )
+        }
+      />
+    </TwoUpWrapper>
+  )
+}
+
+type DiffPanelProps = {
+  previous: string
+  current: string
+}
+
+const useBase64 = (svgText: string) => {
+  const [value, setValue] = useState('')
+  useEffect(() => {
+    setValue(`data:image/svg+xml;base64,${btoa(svgText)}`)
+  }, [svgText])
+
+  return value
+}
+
+const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
+  const { previous, current } = props
+
+  const previousUri = useBase64(previous)
+  const currentUri = useBase64(current)
+
+  const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
+
+  return (
+    <Wrapper>
+      <div>
+        {mode}
+        set mode <button onClick={() => setMode('difference')} />
+        set mode <button onClick={() => setMode('two-up')} />
+      </div>
+      {mode === 'two-up' && (
+        <TwoUp previous={previousUri} current={currentUri} />
+      )}
     </Wrapper>
   )
 }

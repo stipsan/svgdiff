@@ -40,6 +40,7 @@ type EditorProps = {
 
 const Toolbar = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-evenly;
   padding: 4px 8px;
   background: hsla(72, 9%, 22%, 1);
