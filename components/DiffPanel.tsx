@@ -23,6 +23,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   return (
     <Wrapper>
       <Preview dangerouslySetInnerHTML={{ __html: previous }} />
+      <Preview dangerouslySetInnerHTML={{ __html: current }} />
     </Wrapper>
   )
 }

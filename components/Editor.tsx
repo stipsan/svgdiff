@@ -11,6 +11,7 @@ const AceEditor = dynamic<AceEditorProps>(
   async () => {
     const AceEditor = await import('react-ace')
     await import('brace/mode/xml')
+    await import('brace/theme/monokai')
     return AceEditor
   },
   { ssr: false }
@@ -20,6 +21,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 50%;
+  padding: 20px 10px 20px 25px;
 `
 
 const EditorContainer = styled.div`
@@ -31,6 +33,12 @@ type EditorProps = {
   setValue: (value: string) => void
 }
 
+const Toolbar = styled.div`
+  display: flex;
+`
+
+// Upload or paste/edit
+
 const Editor: React.FunctionComponent<EditorProps> = props => {
   const { value, setValue } = props
   const ref = useRef(null)
@@ -38,35 +46,24 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
 
   return (
     <Wrapper>
-      <Upload onUpload={setValue} />
+      <Toolbar>
+        <Upload onUpload={setValue} />
+        <label>
+          <input type="checkbox" defaultChecked /> Update live typing
+        </label>
+      </Toolbar>
       <EditorContainer ref={ref}>
         <AceEditor
           mode="xml"
-          theme="textmate"
-          //name="blah2"
-          //onLoad={this.onLoad}
-          onChange={(...args) => {
-            console.log('ace on change', ...args)
-          }}
+          theme="monokai"
+          onChange={value => setValue(value)}
           fontSize={14}
-          showPrintMargin={true}
-          showGutter={true}
-          highlightActiveLine={true}
+          showPrintMargin={false}
           value={value}
           width={`${width}px`}
           height={`${height}px`}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: false,
-            showLineNumbers: true,
-            tabSize: 2
-          }}
         />
       </EditorContainer>
-
-      <button>Paste</button>
-      <button>Edit</button>
     </Wrapper>
   )
 }
