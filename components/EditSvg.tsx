@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Upload from './Upload'
 
 const EditSvg: React.FunctionComponent = () => {
+  const [source, setSource] = useState('')
+
   return (
     <>
-      <Upload />
+      <Upload
+        onUpload={something =>
+          console.log('onUpload', something) || setSource(something)
+        }
+      />
+      <img src={source} />
       <button>Paste</button>
       <button>Edit</button>
     </>

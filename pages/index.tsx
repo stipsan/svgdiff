@@ -1,25 +1,26 @@
 import { styled } from 'linaria/react'
-import Link from 'next/link'
-import React from 'react'
-import EditSvg from '../components/EditSvg'
-import Layout from '../components/Layout'
+import React, { useState } from 'react'
+import DiffPanel from '../components/DiffPanel'
+import EditorPanel from '../components/EditorPanel'
 
-const Title = styled.h1`
-  font-weight: bold;
+const Layout = styled.div`
+  display: flex;
+  height: 100vh;
 `
 
-const index: React.FunctionComponent = () => {
+const Index: React.FunctionComponent = () => {
+  const [previous, setPrevious] = useState(false)
+  const [current, setCurrent] = useState(false)
+
   return (
-    <Layout title="Home | Next.js + TypeScript Example">
-      <Title>Hello Next.js 👋</Title>
-      <EditSvg />
-      <p>
-        <Link href="/about">
-          <a>About</a>
-        </Link>
-      </p>
+    <Layout>
+      <EditorPanel
+        setPrevious={payload => setPrevious(payload)}
+        setCurrent={payload => setCurrent(payload)}
+      />
+      <DiffPanel previous={previous} current={current} />
     </Layout>
   )
 }
 
-export default index
+export default Index

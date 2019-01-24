@@ -1,12 +1,22 @@
 import React from 'react'
 
-const Upload: React.FunctionComponent = () => {
+type UploadProps = {
+  onUpload: (result: string) => void
+}
+
+const Upload: React.FunctionComponent<UploadProps> = ({ onUpload }) => {
   return (
     <input
       type="file"
-      accept="image/*"
+      accept=".svg"
       onChange={event => {
-        console.log(event.target.files)
+        const file = event.target.files[0]
+
+        const reader = new FileReader()
+        reader.onload = () => {
+          onUpload(reader.result as string)
+        }
+        reader.readAsText(file)
       }}
     />
   )
