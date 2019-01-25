@@ -200,9 +200,11 @@ const TwoUpDiff = styled.div`
   height: 100%;
   justify-content: space-around;
   align-items: center;
+  flex: 1;
 
   canvas {
     box-shadow: hsla(0, 0%, 0%, 0.1) 0 0 0 1px;
+    max-width: 100%;
   }
 `
 
