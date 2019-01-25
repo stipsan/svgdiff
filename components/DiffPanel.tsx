@@ -253,10 +253,8 @@ const useDraw = (
         if (taskId !== currentTask.current) {
           return
         }
-        //ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x, y, 32, 32);
 
         draw(canvasRef.current, img, size, color)
-        console.log('success!!', img)
 
         next()
       }
@@ -436,10 +434,17 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
           <input
             type="number"
             min="0"
-            step="1"
+            step="32"
             max="1024"
             value={size}
-            onChange={event => setSize(parseInt(event.target.value, 10))}
+            onChange={event =>
+              setSize(
+                Math.max(
+                  1,
+                  Math.min(parseInt(event.target.value || 1, 10), 1024)
+                )
+              )
+            }
           />
         </label>
         <label>
