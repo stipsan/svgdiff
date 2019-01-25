@@ -1,5 +1,5 @@
 import { styled } from 'linaria/react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 const Wrapper = styled.section`
   display: flex;
@@ -177,15 +177,6 @@ const draw = (
   // Set the background canvas to chosen color
   ctx.fillStyle = color
   ctx.fillRect(0, 0, width, height)
-
-  //ctx.drawImage(img, 0, 0)
-  console.log(
-    `ctx.drawImage(image, sx: 0, sy: 0, sWidth: ${naturalWidth}, sHeight: ${naturalHeight}, dx: ${
-      renderBounds.x
-    }, dy: ${renderBounds.y}, dWidth: ${renderBounds.width}, dHeight: ${
-      renderBounds.height
-    })`
-  )
 
   ctx.drawImage(
     img,
@@ -416,7 +407,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const [size, setSize] = useState(128)
   const [color, setColor] = useState('#ffffff')
   // @TODO must useMemo for this
-  const dimensions = { height: size, width: size }
+  const dimensions = useMemo(() => ({ height: size, width: size }), [size])
 
   const [previousUri, previousParseError] = useSvgParser(previous, dimensions)
   const [currentUri, currentParseError] = useSvgParser(current, dimensions)
