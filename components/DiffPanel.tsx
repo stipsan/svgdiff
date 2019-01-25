@@ -18,6 +18,13 @@ const Preview = styled.div`
   }
 `
 
+const Toolbar = styled.nav`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding: 4px 8px;
+`
+
 const TwoUpWrapper = styled.section`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -65,14 +72,47 @@ type DiffPanelProps = {
   current: string
 }
 
-const useBase64 = (svgText: string) => {
+const useSvgParser = (
+  svgText: string,
+  fallbackSize: CanvasSize
+): [string, string] => {
   const [value, setValue] = useState('')
+  const [error, setError] = useState('')
   // @TODO rewrite this to useMemo, unless the btoa and SSR becomes an issue?
   useEffect(() => {
-    setValue(`data:image/svg+xml;base64,${btoa(svgText)}`)
+    // @TODO useMemo or useCallback optimization candidate
+    // Browsers fail to render an SVG to canvas if width and height isn't defined
+    // We have to get it from the SVG DOM
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(svgText, 'image/svg+xml')
+    const svgDoc = (doc.documentElement as unknown) as SVGSVGElement
+
+    // Poor mans validation
+    if (!svgDoc.viewBox) {
+      setError(svgDoc.innerHTML || 'Failed to parse SVG')
+      return
+    }
+
+    if (!svgDoc.width.baseVal.value) {
+      if (svgDoc.viewBox.baseVal.width) {
+        svgDoc.setAttribute('width', svgDoc.viewBox.baseVal.width.toString())
+        svgDoc.setAttribute('height', svgDoc.viewBox.baseVal.height.toString())
+      } else {
+        svgDoc.setAttribute('width', fallbackSize.width.toString())
+        svgDoc.setAttribute('height', fallbackSize.height.toString())
+      }
+    }
+    var svghtml = new XMLSerializer().serializeToString(svgDoc)
+
+    // Unset errors if there is any
+    if (error) {
+      setError('')
+    }
+
+    setValue(`data:image/svg+xml,${encodeURI(svghtml).replace(/#/g, '%23')}`)
   }, [svgText])
 
-  return value
+  return [value, error]
 }
 
 // make an image instance
@@ -91,10 +131,30 @@ type CanvasSize = {
 const draw = (
   can: HTMLCanvasElement,
   img: HTMLImageElement,
-  size: CanvasSize = { height: img.naturalHeight, width: img.naturalWidth }
+  size: CanvasSize,
+  color: string
 ) => {
   const ctx = can.getContext('2d', { alpha: false })
   const { height, width } = size
+  const { naturalHeight, naturalWidth } = img
+  const landscape = naturalHeight < naturalWidth
+  const portrait = naturalHeight > naturalWidth
+
+  // Canvas render target bounds
+  const renderBounds = { x: 0, y: 0, width, height }
+  if (landscape) {
+    const aspectRatio = naturalWidth / naturalHeight
+    const renderHeight = height / aspectRatio
+    renderBounds.height = renderHeight
+    renderBounds.y = (height - renderHeight) / 2
+  }
+  if (portrait) {
+    const aspectRatio = naturalHeight / naturalWidth
+    const renderWidth = width / aspectRatio
+    renderBounds.width = renderWidth
+    renderBounds.x = (width - renderWidth) / 2
+  }
+
   // Handle retina displays
   const dpr = window.devicePixelRatio || 1
 
@@ -109,16 +169,47 @@ const draw = (
   // Normalize coordinate system to use css pixels.
   ctx.scale(dpr, dpr)
 
-  // Set the background canvas to white
-  ctx.fillStyle = '#fff'
+  // Set the background canvas to chosen color
+  ctx.fillStyle = color
   ctx.fillRect(0, 0, width, height)
 
-  ctx.drawImage(img, 0, 0)
+  //ctx.drawImage(img, 0, 0)
+  console.log(
+    `ctx.drawImage(image, sx: 0, sy: 0, sWidth: ${naturalWidth}, sHeight: ${naturalHeight}, dx: ${
+      renderBounds.x
+    }, dy: ${renderBounds.y}, dWidth: ${renderBounds.width}, dHeight: ${
+      renderBounds.height
+    })`
+  )
+
+  ctx.drawImage(
+    img,
+    0,
+    0,
+    naturalWidth,
+    naturalHeight,
+    renderBounds.x,
+    renderBounds.y,
+    renderBounds.width,
+    renderBounds.height
+  )
 }
+
+const TwoUpDiff = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: space-around;
+  align-items: center;
+
+  canvas {
+    box-shadow: hsla(0, 0%, 0%, 0.1) 0 0 0 1px;
+  }
+`
 
 const useDraw = (
   datauri: string,
-  size?: CanvasSize
+  size: CanvasSize,
+  color: string
 ): [{ current: HTMLCanvasElement }, HTMLImageElement] => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
@@ -153,7 +244,7 @@ const useDraw = (
         }
         //ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x, y, 32, 32);
 
-        draw(canvasRef.current, img, size)
+        draw(canvasRef.current, img, size, color)
         console.log('success!!', img)
 
         next()
@@ -175,8 +266,10 @@ const useDraw = (
     // If a task is in progress, queue it, replacing anything that might be queued already
     if (!currentTask.current) {
       currentTask.current = task()
+    } else {
+      nextTask.current = task
     }
-  }, [datauri, size])
+  }, [datauri, size, color])
 
   return [canvasRef, imageRef.current]
 }
@@ -184,40 +277,60 @@ const useDraw = (
 const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const { previous, current } = props
 
-  const previousUri = useBase64(previous)
-  const currentUri = useBase64(current)
-
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
+  const [size, setSize] = useState(512)
+  const [color, setColor] = useState('#ffffff')
+  const dimensions = { height: size, width: size }
+
+  const [previousUri, previousParseError] = useSvgParser(previous, dimensions)
+  const [currentUri, currentParseError] = useSvgParser(current, dimensions)
 
   //const test = useTest(previous)
 
   // Simplify to copy the style width, and width properties from the canvas ref itself to the other?
   // Reverse engineering natural{Height,Width} values by dividing current canvas size with device pixel ratio density
-  const [previousCanvasRef, previousImageInstance] = useDraw(previousUri)
-  const [currentCanvasRef] = useDraw(
-    currentUri,
-    previousCanvasRef.current
-      ? {
-          height: previousCanvasRef.current.height / window.devicePixelRatio,
-          width: previousCanvasRef.current.width / window.devicePixelRatio
-        }
-      : undefined
-  )
+  const [previousCanvasRef] = useDraw(previousUri, dimensions, color)
+  const [currentCanvasRef] = useDraw(currentUri, dimensions, color)
 
   return (
     <Wrapper>
-      <div>
-        {mode}
-        set mode <button onClick={() => setMode('difference')} />
-        set mode <button onClick={() => setMode('two-up')} />
-      </div>
-      <div>
+      <Toolbar>
+        mode: {mode}
+        <button onClick={() => setMode('difference')}>difference</button>
+        <button onClick={() => setMode('two-up')}>two-up</button>
+        <label>
+          canvas size:
+          <input
+            type="number"
+            min="0"
+            step="1"
+            max="1024"
+            value={size}
+            onChange={event => setSize(parseInt(event.target.value, 10))}
+          />
+        </label>
+        <label>
+          canvas background:
+          <input
+            type="color"
+            value={color}
+            onChange={event => setColor(event.target.value)}
+          />
+        </label>
+      </Toolbar>
+      <TwoUpDiff>
         <canvas ref={previousCanvasRef} />
         <canvas ref={currentCanvasRef} />
-      </div>
+      </TwoUpDiff>
+
       {mode === 'two-up' && (
         <TwoUp previous={previousUri} current={currentUri} />
       )}
+      <div>
+        {/* @TODO Looks like the editor is able to parse and check if there are errors? */}
+        <div dangerouslySetInnerHTML={{ __html: previousParseError }} />
+        <div dangerouslySetInnerHTML={{ __html: currentParseError }} />
+      </div>
     </Wrapper>
   )
 }
