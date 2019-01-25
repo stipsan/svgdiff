@@ -20,8 +20,9 @@ const Preview = styled.div`
 
 const Toolbar = styled.nav`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   margin-top: 20px;
+  margin-right: 25px;
   padding: 4px 8px;
 `
 
@@ -80,6 +81,10 @@ const useSvgParser = (
   const [error, setError] = useState('')
   // @TODO rewrite this to useMemo, unless the btoa and SSR becomes an issue?
   useEffect(() => {
+    if (!svgText.trim()) {
+      return
+    }
+
     // @TODO useMemo or useCallback optimization candidate
     // Browsers fail to render an SVG to canvas if width and height isn't defined
     // We have to get it from the SVG DOM
@@ -463,11 +468,30 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   return (
     <Wrapper>
       <Toolbar>
-        mode: {mode}
-        <button onClick={() => setMode('difference')}>difference</button>
-        <button onClick={() => setMode('two-up')}>two-up</button>
+        <div>
+          mode:&nbsp;&nbsp;
+          <label>
+            <input
+              name="mode"
+              type="radio"
+              checked={mode === 'two-up'}
+              onChange={event => setMode('two-up')}
+            />
+            &nbsp;&nbsp;two-up &nbsp;&nbsp;&nbsp;
+          </label>
+          <label>
+            <input
+              name="mode"
+              type="radio"
+              checked={mode === 'difference'}
+              onChange={event => setMode('difference')}
+            />
+            &nbsp;&nbsp;difference &nbsp;&nbsp;&nbsp;
+          </label>
+        </div>
+
         <label>
-          canvas size:
+          canvas size:&nbsp;&nbsp;
           <input
             type="number"
             min="0"
@@ -485,7 +509,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
           />
         </label>
         <label>
-          canvas background:
+          canvas background:&nbsp;&nbsp;
           <input
             type="color"
             value={color}

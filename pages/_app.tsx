@@ -15,7 +15,7 @@ export default class extends App {
     return (
       <Container>
         <Head>
-          <title>@TODO</title>
+          <title>svgdiff</title>
           <meta charSet="utf-8" />
           <meta
             name="viewport"
