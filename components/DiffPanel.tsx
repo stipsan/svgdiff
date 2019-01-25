@@ -221,11 +221,12 @@ const useDraw = (
   datauri: string,
   size: CanvasSize,
   color: string
-): [{ current: HTMLCanvasElement }, HTMLImageElement] => {
+): [{ current: HTMLCanvasElement }, boolean] => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const currentTask = useRef(null)
   const nextTask = useRef(null)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     if (!datauri) {
@@ -256,6 +257,7 @@ const useDraw = (
 
         draw(canvasRef.current, img, size, color)
 
+        setReady(true)
         next()
       }
       img.onerror = function(error) {
@@ -280,7 +282,7 @@ const useDraw = (
     }
   }, [datauri, size, color])
 
-  return [canvasRef, imageRef.current]
+  return [canvasRef, ready]
 }
 
 // How much is a color channel allowed to differ and still be considered visually equal
@@ -398,13 +400,37 @@ const useDiff = (
   return [canvasRef, percentage]
 }
 
+const TotalDifference = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  h3 {
+    color: #4a4a4a;
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  h2 {
+    color: #363636;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.125;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-feature-settings: 'tnum';
+  }
+`
+
 const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const { previous, current } = props
 
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
   const [size, setSize] = useState(128)
   const [color, setColor] = useState('#ffffff')
-  // @TODO must useMemo for this
   const dimensions = useMemo(() => ({ height: size, width: size }), [size])
 
   const [previousUri, previousParseError] = useSvgParser(previous, dimensions)
@@ -414,12 +440,20 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
 
   // Simplify to copy the style width, and width properties from the canvas ref itself to the other?
   // Reverse engineering natural{Height,Width} values by dividing current canvas size with device pixel ratio density
-  const [previousCanvasRef] = useDraw(previousUri, dimensions, color)
-  const [currentCanvasRef] = useDraw(currentUri, dimensions, color)
+  const [previousCanvasRef, previousReady] = useDraw(
+    previousUri,
+    dimensions,
+    color
+  )
+  const [currentCanvasRef, currentReady] = useDraw(
+    currentUri,
+    dimensions,
+    color
+  )
 
   const [diffCanvasRef, percentage] = useDiff(
-    previousCanvasRef.current,
-    currentCanvasRef.current,
+    previousReady && previousCanvasRef.current,
+    currentReady && currentCanvasRef.current,
     dimensions
   )
 
@@ -455,16 +489,21 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
             onChange={event => setColor(event.target.value)}
           />
         </label>
-        <div title={percentage}>Match: {percentage.toFixed(2)}%</div>
       </Toolbar>
       <TwoUpDiff active={mode === 'two-up'}>
-        <canvas ref={previousCanvasRef} />
-        <canvas ref={currentCanvasRef} />
+        <canvas key="previous" ref={previousCanvasRef} />
+        <canvas key="current" ref={currentCanvasRef} />
       </TwoUpDiff>
       <DifferenceDiff active={mode === 'difference'}>
         <canvas ref={diffCanvasRef} />
       </DifferenceDiff>
 
+      <TotalDifference>
+        <h3>Similarity</h3>
+        <h2 title={`Exact similarity: ${percentage}%`}>
+          {percentage.toFixed(2)}%
+        </h2>
+      </TotalDifference>
       {process.env.NODE_ENV !== 'production' && false && (
         <TwoUp previous={previousUri} current={currentUri} />
       )}
