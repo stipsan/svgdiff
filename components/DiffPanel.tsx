@@ -134,6 +134,11 @@ const draw = (
   size: CanvasSize,
   color: string
 ) => {
+  // @TODO Drawing can sometimes be delayed so the ref is wrong
+  if (!can) {
+    return
+  }
+
   const ctx = can.getContext('2d', { alpha: false })
   const { height, width } = size
   const { naturalHeight, naturalWidth } = img
@@ -196,9 +201,22 @@ const draw = (
 }
 
 const TwoUpDiff = styled.div`
-  display: flex;
+  display: ${props => (props.active ? 'flex' : 'none')};
   height: 100%;
   justify-content: space-around;
+  align-items: center;
+  flex: 1;
+
+  canvas {
+    box-shadow: hsla(0, 0%, 0%, 0.1) 0 0 0 1px;
+    max-width: 100%;
+  }
+`
+
+const DifferenceDiff = styled.div`
+  display: ${props => (props.active ? 'flex' : 'none')};
+  height: 100%;
+  justify-content: center;
   align-items: center;
   flex: 1;
 
@@ -276,12 +294,128 @@ const useDraw = (
   return [canvasRef, imageRef.current]
 }
 
+// How much is a color channel allowed to differ and still be considered visually equal
+// This is mostly here to debug
+const ERROR_MARGIN = 0
+const diff = (a, b) => (a > b ? a - b : b - a)
+const similar = (a, b) => (a === b ? true : diff(a, b) <= ERROR_MARGIN)
+const getImageData = (can: HTMLCanvasElement, size: CanvasSize) => {
+  const ctx = can.getContext('2d', { alpha: false })
+  // Handle retina displays
+  const dpr = window.devicePixelRatio || 1
+
+  return ctx.getImageData(0, 0, size.width * 2, size.height * 2)
+}
+const useDiff = (
+  previousCanvas: HTMLCanvasElement,
+  currentCanvas: HTMLCanvasElement,
+  size: CanvasSize
+): [{ current: HTMLCanvasElement }, number] => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [percentage, setPercentage] = useState(0)
+
+  useEffect(() => {
+    if (previousCanvas && currentCanvas && canvasRef.current) {
+      const can = canvasRef.current
+      const ctx = can.getContext('2d', { alpha: false })
+
+      // Handle retina displays
+      const dpr = window.devicePixelRatio || 1
+
+      // Update display size, not needed for OffscreenCanvas
+      can.style.height = `${size.height}px`
+      can.style.width = `${size.width}px`
+
+      // Set memory size used for drawing, scaled to account for extra pixel density
+      can.height = size.height * dpr
+      can.width = size.width * dpr
+
+      // Normalize coordinate system to use css pixels.
+      ctx.scale(dpr, dpr)
+
+      const previousImageData = getImageData(previousCanvas, size)
+      const currentImageData = getImageData(currentCanvas, size)
+      const compareData = getImageData(can, size)
+
+      let fullyEqual = true
+      let correctPixels = 0
+      // Compare and draw a diff map (yes, the loop + fillRect is not optimized at all)
+      // Iterate through every pixel
+
+      for (let i = 0; i < currentImageData.data.length; i += 4) {
+        // Check if every pixel is equal
+        let isEqual =
+          previousImageData.data[i + 0] == currentImageData.data[i + 0] && // R value
+          previousImageData.data[i + 1] == currentImageData.data[i + 1] && // G value
+          previousImageData.data[i + 2] == currentImageData.data[i + 2] // B value
+
+        // If not identical, check if we're within the margin of error
+        if (!isEqual) {
+          // Compare pixels
+          let differentPixels =
+            diff(previousImageData.data[i + 0], currentImageData.data[i + 0]) + // R value
+            diff(previousImageData.data[i + 1], currentImageData.data[i + 1]) + // G value
+            diff(previousImageData.data[i + 2], currentImageData.data[i + 2]) // B value
+
+          isEqual = differentPixels <= ERROR_MARGIN
+        }
+
+        if (!isEqual) {
+          fullyEqual = false
+        } else {
+          correctPixels++
+        }
+
+        // Render compare data as green or red pixels
+        if (isEqual) {
+          compareData.data[i + 0] = 0
+          compareData.data[i + 1] = 0
+          compareData.data[i + 2] = 0
+        } else {
+          compareData.data[i + 0] = similar(
+            previousImageData.data[i + 0],
+            currentImageData.data[i + 0]
+          )
+            ? 0
+            : 255
+          compareData.data[i + 1] = similar(
+            previousImageData.data[i + 1],
+            currentImageData.data[i + 1]
+          )
+            ? 0
+            : 255
+          compareData.data[i + 2] = similar(
+            previousImageData.data[i + 2],
+            currentImageData.data[i + 2]
+          )
+            ? 0
+            : 255
+        }
+
+        //    compareData.data[i + 1] = isEqual ? 255 : 0;
+        compareData.data[i + 3] = 255
+      }
+
+      if (!fullyEqual) {
+        ctx.putImageData(compareData, 0, 0)
+
+        setPercentage((correctPixels / (compareData.data.length / 4)) * 100)
+      } else {
+        setPercentage(100)
+      }
+    }
+  }, [previousCanvas, currentCanvas, size])
+
+  return [canvasRef, percentage]
+}
+
 const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const { previous, current } = props
 
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
-  const [size, setSize] = useState(512)
+  const [size, setSize] = useState(128)
   const [color, setColor] = useState('#ffffff')
+  // @TODO must useMemo for this
   const dimensions = { height: size, width: size }
 
   const [previousUri, previousParseError] = useSvgParser(previous, dimensions)
@@ -293,6 +427,12 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   // Reverse engineering natural{Height,Width} values by dividing current canvas size with device pixel ratio density
   const [previousCanvasRef] = useDraw(previousUri, dimensions, color)
   const [currentCanvasRef] = useDraw(currentUri, dimensions, color)
+
+  const [diffCanvasRef, percentage] = useDiff(
+    previousCanvasRef.current,
+    currentCanvasRef.current,
+    dimensions
+  )
 
   return (
     <Wrapper>
@@ -319,13 +459,17 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
             onChange={event => setColor(event.target.value)}
           />
         </label>
+        <div title={percentage}>Match: {percentage.toFixed(2)}%</div>
       </Toolbar>
-      <TwoUpDiff>
+      <TwoUpDiff active={mode === 'two-up'}>
         <canvas ref={previousCanvasRef} />
         <canvas ref={currentCanvasRef} />
       </TwoUpDiff>
+      <DifferenceDiff active={mode === 'difference'}>
+        <canvas ref={diffCanvasRef} />
+      </DifferenceDiff>
 
-      {mode === 'two-up' && (
+      {process.env.NODE_ENV !== 'production' && false && (
         <TwoUp previous={previousUri} current={currentUri} />
       )}
       <div>
