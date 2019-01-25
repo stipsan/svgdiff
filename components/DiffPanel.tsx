@@ -223,7 +223,6 @@ const useDraw = (
   color: string
 ): [{ current: HTMLCanvasElement }, boolean] => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const imageRef = useRef<HTMLImageElement>(null)
   const currentTask = useRef(null)
   const nextTask = useRef(null)
   const [ready, setReady] = useState(false)
@@ -248,6 +247,8 @@ const useDraw = (
           currentTask.current = null
         }
       }
+
+      setReady(false)
 
       const img = new Image()
       img.onload = function() {
@@ -295,12 +296,13 @@ const getImageData = (can: HTMLCanvasElement, size: CanvasSize) => {
   // Handle retina displays
   const dpr = window.devicePixelRatio || 1
 
-  return ctx.getImageData(0, 0, size.width * 2, size.height * 2)
+  return ctx.getImageData(0, 0, size.width * dpr, size.height * dpr)
 }
 const useDiff = (
   previousCanvas: HTMLCanvasElement,
   currentCanvas: HTMLCanvasElement,
-  size: CanvasSize
+  size: CanvasSize,
+  color: string
 ): [{ current: HTMLCanvasElement }, number] => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [percentage, setPercentage] = useState(0)
@@ -395,7 +397,7 @@ const useDiff = (
         setPercentage(100)
       }
     }
-  }, [previousCanvas, currentCanvas, size])
+  }, [previousCanvas, currentCanvas, size, color])
 
   return [canvasRef, percentage]
 }
@@ -454,7 +456,8 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const [diffCanvasRef, percentage] = useDiff(
     previousReady && previousCanvasRef.current,
     currentReady && currentCanvasRef.current,
-    dimensions
+    dimensions,
+    color
   )
 
   return (
