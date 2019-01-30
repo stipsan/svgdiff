@@ -834,21 +834,6 @@
     log-update "^2.3.0"
     strip-ansi "^3.0.1"
 
-"@now/next@0.0.83":
-  version "0.0.83"
-  resolved "https://registry.yarnpkg.com/@now/next/-/next-0.0.83.tgz#16ca2f2655f5674702aa71c4cc455c0e15bc2f12"
-  integrity sha512-Y+k2FN6262hCQgyGdwxIpy/Zh8c5PfueqXJVSLu2g37KmHJMorfqfpMR7JiT12NQ67sJfz2dRe1x6ihiwQ9hWQ==
-  dependencies:
-    "@now/node-bridge" "0.1.4"
-    execa "^1.0.0"
-    fs.promised "^3.0.0"
-    semver "^5.6.0"
-
-"@now/node-bridge@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@now/node-bridge/-/node-bridge-0.1.4.tgz#59a555e090f16f5e02d289bd1fd6c47f4274304b"
-  integrity sha512-UXlDWyrPU1bB9nsh11MGfGo81GfLij1X4Dew+9fplThRzEGbrTey8aDTjNvmsTV+jxnyktLYzet2uaI9yXXiEw==
-
 "@rehooks/component-size@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@rehooks/component-size/-/component-size-1.0.2.tgz#b93d5f39bc9f47a6c0feb39690ae07156bc65863"
@@ -3278,11 +3263,6 @@ fs-write-stream-atomic@^1.0.8:
     iferr "^0.1.5"
     imurmurhash "^0.1.4"
     readable-stream "1 || 2"
-
-fs.promised@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/fs.promised/-/fs.promised-3.0.0.tgz#ab77379f7c1ad0939e1262a8c2ced93fa6c39d3b"
-  integrity sha1-q3c3n3wa0JOeEmKows7ZP6bDnTs=
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -6660,7 +6640,7 @@ semver-compare@^1.0.0:
   resolved "https://registry.yarnpkg.com/semver-compare/-/semver-compare-1.0.0.tgz#0dee216a1c941ab37e9efb1788f6afc5ff5537fc"
   integrity sha1-De4hahyUGrN+nvsXiPavxf9VN/w=
 
-"semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.4.1, semver@^5.5.0, semver@^5.5.1, semver@^5.6.0:
+"semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.4.1, semver@^5.5.0, semver@^5.5.1:
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.6.0.tgz#7e74256fbaa49c75aa7c7a205cc22799cac80004"
   integrity sha512-RS9R6R35NYgQn++fkDWaOmqGoj4Ek9gGs+DPxNUZKuwE183xjJroKvyo1IzVFeXvUrvmALy6FWD5xrdJT25gMg==

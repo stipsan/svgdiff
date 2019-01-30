@@ -3,6 +3,7 @@ const withTypescript = require('@zeit/next-typescript')
 
 module.exports = withCSS(
   withTypescript({
+    target: 'serverless',
     webpack(config, options) {
       const tsRule = config.module.rules.findIndex(loader =>
         loader.test.test('test.tsx')
