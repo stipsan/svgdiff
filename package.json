@@ -13,16 +13,16 @@
     "@rehooks/component-size": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^1.1.0",
     "@typescript-eslint/parser": "^1.1.0",
-    "@zeit/next-css": "canary",
+    "@zeit/next-css": "1.0.2-canary.2",
     "@zeit/next-typescript": "^1.1.1",
     "linaria": "^1.0.0-beta.13",
-    "next": "canary",
+    "next": "8.0.0-canary.11",
     "normalize.css": "^8.0.1",
     "polished": "^2.3.3",
     "postcss-preset-env": "^6.5.0",
-    "react": "next",
+    "react": "16.8.0-alpha.1",
     "react-ace": "^6.3.2",
-    "react-dom": "next"
+    "react-dom": "16.8.0-alpha.1"
   },
   "devDependencies": {
     "@types/next": "^7.0.6",
