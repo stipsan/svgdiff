@@ -1,0 +1,9 @@
+{
+  "name": "svgdiff",
+  "version": 2,
+  "builds": [{ "src": "next.config.js", "use": "@now/next" }],
+  "github": {
+    "enabled": false,
+    "silent": true
+  }
+}
