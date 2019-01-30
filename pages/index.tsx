@@ -6,6 +6,8 @@ import EditorPanel from '../components/EditorPanel'
 const Layout = styled.div`
   display: flex;
   height: 100vh;
+  /* @TODO show a warning instead of forcing the min width */
+  min-width: 1440px;
 `
 
 const Index: React.FunctionComponent = () => {
