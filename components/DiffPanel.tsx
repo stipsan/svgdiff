@@ -1,5 +1,5 @@
 import { styled } from 'linaria/react'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const Wrapper = styled.section`
   display: flex;
@@ -293,9 +293,7 @@ const useDraw = (
 
 // How much is a color channel allowed to differ and still be considered visually equal
 // This is mostly here to debug
-const ERROR_MARGIN = 0
 const diff = (a, b) => (a > b ? a - b : b - a)
-const similar = (a, b) => (a === b ? true : diff(a, b) <= ERROR_MARGIN)
 const getImageData = (can: HTMLCanvasElement, size: CanvasSize) => {
   const ctx = can.getContext('2d', { alpha: false })
   // Handle retina displays
@@ -307,10 +305,16 @@ const useDiff = (
   previousCanvas: HTMLCanvasElement,
   currentCanvas: HTMLCanvasElement,
   size: CanvasSize,
-  color: string
+  color: string,
+  threshold: number
 ): [{ current: HTMLCanvasElement }, number] => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [percentage, setPercentage] = useState(0)
+
+  const similar = useCallback(
+    (a, b) => (a === b ? true : diff(a, b) <= threshold),
+    [threshold]
+  )
 
   useEffect(() => {
     if (previousCanvas && currentCanvas && canvasRef.current) {
@@ -355,7 +359,7 @@ const useDiff = (
             diff(previousImageData.data[i + 1], currentImageData.data[i + 1]) + // G value
             diff(previousImageData.data[i + 2], currentImageData.data[i + 2]) // B value
 
-          isEqual = differentPixels <= ERROR_MARGIN
+          isEqual = differentPixels <= threshold
         }
 
         if (!isEqual) {
@@ -402,7 +406,7 @@ const useDiff = (
         setPercentage(100)
       }
     }
-  }, [previousCanvas, currentCanvas, size, color])
+  }, [previousCanvas, currentCanvas, size, color, threshold])
 
   return [canvasRef, percentage]
 }
@@ -437,6 +441,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
 
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
   const [size, setSize] = useState(128)
+  const [threshold, setThreshold] = useState(0)
   const [color, setColor] = useState('#ffffff')
   const dimensions = useMemo(() => ({ height: size, width: size }), [size])
 
@@ -462,7 +467,8 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
     previousReady && previousCanvasRef.current,
     currentReady && currentCanvasRef.current,
     dimensions,
-    color
+    color,
+    threshold
   )
 
   return (
@@ -475,7 +481,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
               name="mode"
               type="radio"
               checked={mode === 'two-up'}
-              onChange={event => setMode('two-up')}
+              onChange={() => setMode('two-up')}
             />
             &nbsp;&nbsp;two-up &nbsp;&nbsp;&nbsp;
           </label>
@@ -484,7 +490,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
               name="mode"
               type="radio"
               checked={mode === 'difference'}
-              onChange={event => setMode('difference')}
+              onChange={() => setMode('difference')}
             />
             &nbsp;&nbsp;difference &nbsp;&nbsp;&nbsp;
           </label>
@@ -508,12 +514,31 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
             }
           />
         </label>
+
         <label>
           canvas background:&nbsp;&nbsp;
           <input
             type="color"
             value={color}
             onChange={event => setColor(event.target.value)}
+          />
+        </label>
+        <label title="A value of 0 means that colors must be exactly the same to be equal. While a value of 2 means #FFFFFF and #FEFEFE are equal.">
+          diff threshold:&nbsp;&nbsp;
+          <input
+            type="number"
+            min="0"
+            step="1"
+            max="254"
+            value={threshold}
+            onChange={event =>
+              setThreshold(
+                Math.max(
+                  0,
+                  Math.min(parseInt(event.target.value || 0, 10), 254)
+                )
+              )
+            }
           />
         </label>
       </Toolbar>
