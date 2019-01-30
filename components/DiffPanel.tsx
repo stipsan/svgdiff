@@ -201,7 +201,9 @@ const TwoUpDiff = styled.div`
   height: 100%;
   justify-content: space-around;
   align-items: center;
+  flex-wrap: wrap;
   flex: 1;
+  overflow: auto;
 
   canvas {
     box-shadow: hsla(0, 0%, 0%, 0.1) 0 0 0 1px;
@@ -440,15 +442,13 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const { previous, current } = props
 
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
-  const [size, setSize] = useState(128)
+  const [size, setSize] = useState(512)
   const [threshold, setThreshold] = useState(0)
   const [color, setColor] = useState('#ffffff')
   const dimensions = useMemo(() => ({ height: size, width: size }), [size])
 
   const [previousUri, previousParseError] = useSvgParser(previous, dimensions)
   const [currentUri, currentParseError] = useSvgParser(current, dimensions)
-
-  //const test = useTest(previous)
 
   // Simplify to copy the style width, and width properties from the canvas ref itself to the other?
   // Reverse engineering natural{Height,Width} values by dividing current canvas size with device pixel ratio density
