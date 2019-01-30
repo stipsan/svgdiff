@@ -1,6 +1,7 @@
 {
   "name": "svgdiff",
   "version": 2,
+  "alias": ["svgdiff.now.sh"],
   "builds": [{ "src": "next.config.js", "use": "@now/next" }],
   "github": {
     "enabled": true,
