@@ -26,7 +26,7 @@
     "react-dom": "16.8.0-alpha.1"
   },
   "devDependencies": {
-    "@types/next": "7.0.6",
+    "@types/next": "7.0.7",
     "@types/react": "16.7.20",
     "@types/react-dom": "16.0.11",
     "babel-eslint": "9.0.0",
