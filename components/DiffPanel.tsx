@@ -12,12 +12,6 @@ const Wrapper = styled.section`
   }
 `
 
-const Preview = styled.div`
-  svg {
-    min-width: 128px;
-  }
-`
-
 const Toolbar = styled.nav`
   display: flex;
   justify-content: space-between;
@@ -25,48 +19,6 @@ const Toolbar = styled.nav`
   margin-right: 25px;
   padding: 4px 8px;
 `
-
-const TwoUpWrapper = styled.section`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  flex: 1;
-`
-type TwoUpProps = {
-  previous: string
-  current: string
-}
-const TwoUp: React.FunctionComponent<TwoUpProps> = props => {
-  const { previous, current } = props
-
-  return (
-    <TwoUpWrapper>
-      <img
-        src={previous}
-        title="original"
-        onLoad={event =>
-          console.log(
-            'previous',
-            event.target,
-            event.currentTarget.naturalWidth,
-            event.currentTarget.naturalHeight
-          )
-        }
-      />
-      <img
-        src={current}
-        title="modified"
-        onLoad={event =>
-          console.log(
-            'current',
-            event.target,
-            event.currentTarget.naturalWidth,
-            event.currentTarget.naturalHeight
-          )
-        }
-      />
-    </TwoUpWrapper>
-  )
-}
 
 type DiffPanelProps = {
   previous: string
@@ -196,7 +148,8 @@ const draw = (
   )
 }
 
-const TwoUpDiff = styled.div`
+type TwoUpDiffProps = { active: boolean }
+const TwoUpDiff = styled.div<TwoUpDiffProps>`
   display: ${props => (props.active ? 'flex' : 'none')};
   height: 100%;
   justify-content: space-around;
@@ -211,7 +164,8 @@ const TwoUpDiff = styled.div`
   }
 `
 
-const DifferenceDiff = styled.div`
+type DifferenceDiffProps = { active: boolean }
+const DifferenceDiff = styled.div<DifferenceDiffProps>`
   display: ${props => (props.active ? 'flex' : 'none')};
   height: 100%;
   justify-content: center;
@@ -508,7 +462,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
               setSize(
                 Math.max(
                   1,
-                  Math.min(parseInt(event.target.value || 1, 10), 1024)
+                  Math.min(parseInt(event.target.value || '1', 10), 1024)
                 )
               )
             }
@@ -535,7 +489,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
               setThreshold(
                 Math.max(
                   0,
-                  Math.min(parseInt(event.target.value || 0, 10), 254)
+                  Math.min(parseInt(event.target.value || '0', 10), 254)
                 )
               )
             }
@@ -556,9 +510,6 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
           {percentage.toFixed(2)}%
         </h2>
       </TotalDifference>
-      {process.env.NODE_ENV !== 'production' && false && (
-        <TwoUp previous={previousUri} current={currentUri} />
-      )}
       <div>
         {/* @TODO Looks like the editor is able to parse and check if there are errors? */}
         <div dangerouslySetInnerHTML={{ __html: previousParseError }} />
