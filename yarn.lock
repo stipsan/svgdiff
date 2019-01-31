@@ -860,10 +860,10 @@
     "@types/react" "*"
     "@types/react-loadable" "*"
 
-"@types/next@7.0.6":
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/@types/next/-/next-7.0.6.tgz#c4dabfe8707404160651ecf1fa35fd33cc566cdb"
-  integrity sha512-umm6e2UcVxO5HFZCpvFbedIW62Dv+6TS64hPdtgnzvlwsTNcILTXdq7virH+UWWDI/qdMQiiZHcqbXDzF0AUzA==
+"@types/next@7.0.7":
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/@types/next/-/next-7.0.7.tgz#53a489e25b73a657c2ad760dd60358fa30a7dc44"
+  integrity sha512-RXCxhnYnhWlal0Ihlyif+Gq3rZmC1smXBb7btaxfpo1byo3sAyud69Sa0h3ef5fXA7H9XHxfxFLeUuVE0b2Vgg==
   dependencies:
     "@types/next-server" "*"
     "@types/node" "*"
