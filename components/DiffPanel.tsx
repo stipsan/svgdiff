@@ -148,9 +148,8 @@ const draw = (
   )
 }
 
-type TwoUpDiffProps = { active: boolean }
-const TwoUpDiff = styled.div<TwoUpDiffProps>`
-  display: ${props => (props.active ? 'flex' : 'none')};
+const TwoUpDiff = styled.div`
+  display: flex;
   height: 100%;
   justify-content: space-around;
   align-items: center;
@@ -164,9 +163,8 @@ const TwoUpDiff = styled.div<TwoUpDiffProps>`
   }
 `
 
-type DifferenceDiffProps = { active: boolean }
-const DifferenceDiff = styled.div<DifferenceDiffProps>`
-  display: ${props => (props.active ? 'flex' : 'none')};
+const DifferenceDiff = styled.div`
+  display: flex;
   height: 100%;
   justify-content: center;
   align-items: center;
@@ -496,11 +494,13 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
           />
         </label>
       </Toolbar>
-      <TwoUpDiff active={mode === 'two-up'}>
+      <TwoUpDiff style={{ display: mode === 'two-up' ? undefined : 'none' }}>
         <canvas key="previous" ref={previousCanvasRef} />
         <canvas key="current" ref={currentCanvasRef} />
       </TwoUpDiff>
-      <DifferenceDiff active={mode === 'difference'}>
+      <DifferenceDiff
+        style={{ display: mode === 'difference' ? undefined : 'none' }}
+      >
         <canvas ref={diffCanvasRef} />
       </DifferenceDiff>
 
