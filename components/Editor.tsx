@@ -1,6 +1,8 @@
 import useComponentSize from '@rehooks/component-size'
 import { styled } from 'linaria/react'
 import dynamic from 'next/dynamic'
+import htmlParser from 'prettier/parser-html'
+import prettier from 'prettier/standalone'
 import React, { useRef } from 'react'
 import { AceEditorProps } from 'react-ace'
 import { button } from '../lib/design'
@@ -44,7 +46,7 @@ const Toolbar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 5px;
+  padding: 4px;
   background: hsla(72, 9%, 22%, 1);
   color: white;
 `
@@ -58,7 +60,16 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
     <Wrapper>
       <Toolbar>
         <Upload id={`${props.name}-upload`} onUpload={setValue} />
-        <button className={button}>Prettify</button>
+        <button
+          className={button}
+          onClick={() =>
+            setValue(
+              prettier.format(value, { parser: 'html', plugins: [htmlParser] })
+            )
+          }
+        >
+          Prettify
+        </button>
       </Toolbar>
       <EditorContainer ref={ref}>
         <AceEditor

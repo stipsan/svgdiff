@@ -1,5 +1,6 @@
 import { styled } from 'linaria/react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import * as parsers from '../lib/parsers'
 
 const Wrapper = styled.section`
   display: flex;
@@ -37,12 +38,7 @@ const useSvgParser = (
       return
     }
 
-    // @TODO useMemo or useCallback optimization candidate
-    // Browsers fail to render an SVG to canvas if width and height isn't defined
-    // We have to get it from the SVG DOM
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(svgText, 'image/svg+xml')
-    const svgDoc = (doc.documentElement as unknown) as SVGSVGElement
+    const svgDoc = parsers.documentFragment(svgText)
 
     // Poor mans validation
     if (!svgDoc.viewBox) {
@@ -50,7 +46,16 @@ const useSvgParser = (
       return
     }
 
-    if (!svgDoc.width.baseVal.value) {
+    // Browsers fail to render an SVG to canvas if width and height isn't defined
+    // We have to get it from the SVG DOM
+    let baseWidth
+    try {
+      // Asking for the width baseVal getter can throw an exception if the value is relative
+      baseWidth = svgDoc.width.baseVal.value
+    } catch (err) {
+      // Ignore
+    }
+    if (!baseWidth) {
       if (svgDoc.viewBox.baseVal.width) {
         svgDoc.setAttribute('width', svgDoc.viewBox.baseVal.width.toString())
         svgDoc.setAttribute('height', svgDoc.viewBox.baseVal.height.toString())
