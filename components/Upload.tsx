@@ -1,31 +1,5 @@
-import { css } from 'linaria'
 import React from 'react'
-
-const Input = css`
-  display: none;
-`
-
-const Label = css`
-  background-color: hsla(0, 0%, 0%, 0.1);
-  border-radius: 5px;
-  color: hsla(0, 0%, 100%, 1);
-  padding: 0.5em 0.75em;
-  text-align: center;
-  white-space: nowrap;
-  user-select: none;
-
-  &:hover {
-    background-color: #eee;
-    border-color: transparent;
-    color: #363636;
-  }
-
-  &:active {
-    background-color: #e8e8e8;
-    border-color: transparent;
-    color: #363636;
-  }
-`
+import { button } from '../lib/design'
 
 type UploadProps = {
   id: string
@@ -35,8 +9,8 @@ type UploadProps = {
 const Upload: React.FunctionComponent<UploadProps> = ({ id, onUpload }) => (
   <>
     <input
-      className={Input}
       id={id}
+      style={{ display: 'none' }}
       type="file"
       accept=".svg"
       onChange={event => {
@@ -53,7 +27,7 @@ const Upload: React.FunctionComponent<UploadProps> = ({ id, onUpload }) => (
         reader.readAsText(file)
       }}
     />
-    <label className={Label} htmlFor={id}>
+    <label className={button} htmlFor={id} tabIndex={0}>
       Upload
     </label>
   </>

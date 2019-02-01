@@ -3,6 +3,7 @@ import { styled } from 'linaria/react'
 import dynamic from 'next/dynamic'
 import React, { useRef } from 'react'
 import { AceEditorProps } from 'react-ace'
+import { button } from '../lib/design'
 import Upload from './Upload'
 
 // Uglyness just to work around react-ace not working in SSR, and not being able to use React.lazy for the same reason
@@ -43,7 +44,7 @@ const Toolbar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
+  padding: 4px 5px;
   background: hsla(72, 9%, 22%, 1);
   color: white;
 `
@@ -57,7 +58,7 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
     <Wrapper>
       <Toolbar>
         <Upload id={`${props.name}-upload`} onUpload={setValue} />
-        <button>Prettify</button>
+        <button className={button}>Prettify</button>
       </Toolbar>
       <EditorContainer ref={ref}>
         <AceEditor
