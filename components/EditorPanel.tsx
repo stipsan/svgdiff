@@ -21,8 +21,8 @@ const EditorPanel: React.FunctionComponent<EditorPanelProps> = props => {
 
   return (
     <Wrapper>
-      <Editor value={previous} setValue={setPrevious} />
-      <Editor value={current} setValue={setCurrent} />
+      <Editor name="a" value={previous} setValue={setPrevious} />
+      <Editor name="b" value={current} setValue={setCurrent} />
     </Wrapper>
   )
 }

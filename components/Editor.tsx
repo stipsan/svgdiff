@@ -1,8 +1,11 @@
 import useComponentSize from '@rehooks/component-size'
 import { styled } from 'linaria/react'
 import dynamic from 'next/dynamic'
+import htmlParser from 'prettier/parser-html'
+import prettier from 'prettier/standalone'
 import React, { useRef } from 'react'
 import { AceEditorProps } from 'react-ace'
+import { button } from '../lib/design'
 import Upload from './Upload'
 
 // Uglyness just to work around react-ace not working in SSR, and not being able to use React.lazy for the same reason
@@ -34,6 +37,7 @@ const EditorContainer = styled.div`
 `
 
 type EditorProps = {
+  name: string
   value: string
   setValue: (value: string) => void
 }
@@ -41,13 +45,11 @@ type EditorProps = {
 const Toolbar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  padding: 4px 8px;
+  justify-content: space-between;
+  padding: 4px;
   background: hsla(72, 9%, 22%, 1);
   color: white;
 `
-
-// Upload or paste/edit
 
 const Editor: React.FunctionComponent<EditorProps> = props => {
   const { value, setValue } = props
@@ -57,11 +59,17 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
   return (
     <Wrapper>
       <Toolbar>
-        <Upload onUpload={setValue} />
-        <label>
-          <input type="checkbox" defaultChecked /> Update while typing
-        </label>
-        <button>Prettify</button>
+        <Upload id={`${props.name}-upload`} onUpload={setValue} />
+        <button
+          className={button}
+          onClick={() =>
+            setValue(
+              prettier.format(value, { parser: 'html', plugins: [htmlParser] })
+            )
+          }
+        >
+          Prettify
+        </button>
       </Toolbar>
       <EditorContainer ref={ref}>
         <AceEditor
