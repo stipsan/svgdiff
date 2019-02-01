@@ -40,7 +40,7 @@
     "lint-staged": "8.1.1",
     "prettier": "1.16.3",
     "prettier-package-json": "2.0.1",
-    "typescript": "3.2.4"
+    "typescript": "3.3.1"
   },
   "husky": {
     "hooks": {
