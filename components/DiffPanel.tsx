@@ -265,7 +265,7 @@ const useDiff = (
   threshold: number
 ): [{ current: HTMLCanvasElement }, number] => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [percentage, setPercentage] = useState(0)
+  const [percentage, setPercentage] = useState(-1)
 
   const similar = useCallback(
     (a, b) => (a === b ? true : diff(a, b) <= threshold),
@@ -361,6 +361,8 @@ const useDiff = (
       } else {
         setPercentage(100)
       }
+    } else {
+      setPercentage(-1)
     }
   }, [previousCanvas, currentCanvas, size, color, threshold])
 
@@ -506,8 +508,12 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
 
       <TotalDifference>
         <h3>Similarity</h3>
-        <h2 title={`Exact similarity: ${percentage}%`}>
-          {percentage.toFixed(2)}%
+        <h2
+          title={
+            percentage >= 0 ? `Exact similarity: ${percentage}%` : undefined
+          }
+        >
+          {percentage >= 0 ? `${percentage.toFixed(2)}%` : 'N/A'}
         </h2>
       </TotalDifference>
       <div>

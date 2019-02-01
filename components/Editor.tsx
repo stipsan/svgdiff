@@ -34,6 +34,7 @@ const EditorContainer = styled.div`
 `
 
 type EditorProps = {
+  name: string
   value: string
   setValue: (value: string) => void
 }
@@ -41,13 +42,11 @@ type EditorProps = {
 const Toolbar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   padding: 4px 8px;
   background: hsla(72, 9%, 22%, 1);
   color: white;
 `
-
-// Upload or paste/edit
 
 const Editor: React.FunctionComponent<EditorProps> = props => {
   const { value, setValue } = props
@@ -57,10 +56,7 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
   return (
     <Wrapper>
       <Toolbar>
-        <Upload onUpload={setValue} />
-        <label>
-          <input type="checkbox" defaultChecked /> Update while typing
-        </label>
+        <Upload id={`${props.name}-upload`} onUpload={setValue} />
         <button>Prettify</button>
       </Toolbar>
       <EditorContainer ref={ref}>
