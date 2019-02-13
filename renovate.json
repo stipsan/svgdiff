@@ -1,5 +1,12 @@
 {
   "extends": [
-    "config:base"
+    "config:js-app",
+    "packages:eslint"
+  ],
+  "packageRules": [
+    {
+      "packageNames": ["typescript"],
+      "packagePatterns": ["^@types/"]
+    }
   ]
 }
