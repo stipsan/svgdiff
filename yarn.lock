@@ -4201,10 +4201,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-linaria@1.0.0-beta.13:
-  version "1.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/linaria/-/linaria-1.0.0-beta.13.tgz#a1513fa61a222259256d3ef8c7295f93fed27ff4"
-  integrity sha512-o1dGhiZHgghqkzbWdFhGeJwB9oUnye/oaOIaUd8FZ2yFYVne+XXpRj8fABCQrq0KwLjxRfN+dma3s5lssh6nUQ==
+linaria@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/linaria/-/linaria-1.1.0.tgz#0d1e4a5f61c71a11063f9f4100173b41cf8bd07e"
+  integrity sha512-893Cju+vqTNkECufYdswEW1R2X60Cz6XKUBFJ9tVoErhd+n4sGby0hx/d/QelCDZ5ll6JJa352YxZqRbUkhrQA==
   dependencies:
     "@babel/core" "^7.1.2"
     "@babel/generator" "^7.1.3"
