@@ -311,6 +311,8 @@ const useDiff = (
           previousImageData.data[i + 1] == currentImageData.data[i + 1] && // G value
           previousImageData.data[i + 2] == currentImageData.data[i + 2] // B value
 
+        let pixelSimilarityRatio = 0
+
         // If not identical, check if we're within the margin of error
         if (!isEqual) {
           // Compare pixels
@@ -323,15 +325,14 @@ const useDiff = (
 
           // We increment correct pixels as floats, allowing us to measure how different the colors of each
           // pixel is, instead of simply measuring how many pixels aren't exactly alike
-
-          // 255 + 255 + 255 = 765 maximum distance between two colors
           // @TODO optimize math
-
-          correctPixels += isEqual ? 1 : (765 - colorDifference) / 765
+          // 255 + 255 + 255 = 765 maximum distance between two colors
+          pixelSimilarityRatio = isEqual ? 1 : (765 - colorDifference) / 765
         } else {
-          // @TODO swap this if/else block now that there's an else block
-          correctPixels++
+          pixelSimilarityRatio = 1
         }
+
+        correctPixels += pixelSimilarityRatio
 
         if (!isEqual) {
           // @TODO rename to everyPixelIsEqual?
