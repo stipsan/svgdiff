@@ -40,19 +40,20 @@ type EditorProps = {
   name: string
   value: string
   setValue: (value: string) => void
+  demo: string
 }
 
 const Toolbar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: start;
   padding: 4px;
   background: hsla(72, 9%, 22%, 1);
   color: white;
 `
 
 const Editor: React.FunctionComponent<EditorProps> = props => {
-  const { value, setValue } = props
+  const { value, setValue, demo } = props
   const ref = useRef(null)
   const { width, height } = useComponentSize(ref)
 
@@ -60,16 +61,35 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
     <Wrapper>
       <Toolbar>
         <Upload id={`${props.name}-upload`} onUpload={setValue} />
-        <button
-          className={button}
-          onClick={() =>
-            setValue(
-              prettier.format(value, { parser: 'html', plugins: [htmlParser] })
-            )
-          }
-        >
-          Prettify
-        </button>
+
+        {value.trim() ? (
+          <button
+            key="prettify"
+            className={button}
+            onClick={() =>
+              setValue(
+                prettier.format(value, {
+                  parser: 'html',
+                  plugins: [htmlParser]
+                })
+              )
+            }
+          >
+            Prettify
+          </button>
+        ) : (
+          <button
+            key="demo"
+            className={button}
+            onClick={() =>
+              setValue(
+                prettier.format(demo, { parser: 'html', plugins: [htmlParser] })
+              )
+            }
+          >
+            Demo
+          </button>
+        )}
       </Toolbar>
       <EditorContainer ref={ref}>
         <AceEditor

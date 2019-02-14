@@ -256,6 +256,7 @@ const diff = (a, b) => (a > b ? a - b : b - a)
 const getImageData = (can: HTMLCanvasElement, size: CanvasSize) => {
   const ctx = can.getContext('2d', { alpha: false })
   // Handle retina displays
+  // @TODO move this to useState + useEffect so it responds to moving browser windows between display types
   const dpr = window.devicePixelRatio || 1
 
   return ctx.getImageData(0, 0, size.width * dpr, size.height * dpr)
@@ -310,21 +311,32 @@ const useDiff = (
           previousImageData.data[i + 1] == currentImageData.data[i + 1] && // G value
           previousImageData.data[i + 2] == currentImageData.data[i + 2] // B value
 
+        let pixelSimilarityRatio = 0
+
         // If not identical, check if we're within the margin of error
         if (!isEqual) {
           // Compare pixels
-          let differentPixels =
+          let colorDifference =
             diff(previousImageData.data[i + 0], currentImageData.data[i + 0]) + // R value
             diff(previousImageData.data[i + 1], currentImageData.data[i + 1]) + // G value
             diff(previousImageData.data[i + 2], currentImageData.data[i + 2]) // B value
 
-          isEqual = differentPixels <= threshold
+          isEqual = colorDifference <= threshold
+
+          // We increment correct pixels as floats, allowing us to measure how different the colors of each
+          // pixel is, instead of simply measuring how many pixels aren't exactly alike
+          // @TODO optimize math
+          // 255 + 255 + 255 = 765 maximum distance between two colors
+          pixelSimilarityRatio = isEqual ? 1 : (765 - colorDifference) / 765
+        } else {
+          pixelSimilarityRatio = 1
         }
 
+        correctPixels += pixelSimilarityRatio
+
         if (!isEqual) {
+          // @TODO rename to everyPixelIsEqual?
           fullyEqual = false
-        } else {
-          correctPixels++
         }
 
         // Render compare data as green or red pixels
@@ -353,13 +365,11 @@ const useDiff = (
             : 255
         }
 
-        //    compareData.data[i + 1] = isEqual ? 255 : 0;
         compareData.data[i + 3] = 255
       }
 
+      ctx.putImageData(compareData, 0, 0)
       if (!fullyEqual) {
-        ctx.putImageData(compareData, 0, 0)
-
         setPercentage((correctPixels / (compareData.data.length / 4)) * 100)
       } else {
         setPercentage(100)
@@ -377,6 +387,7 @@ const TotalDifference = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  padding-bottom: 15px;
 
   h3 {
     color: #4a4a4a;
@@ -511,6 +522,12 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
         <canvas ref={diffCanvasRef} />
       </DifferenceDiff>
 
+      <div>
+        {/* @TODO Looks like the editor is able to parse and check if there are errors? */}
+        <div dangerouslySetInnerHTML={{ __html: previousParseError }} />
+        <div dangerouslySetInnerHTML={{ __html: currentParseError }} />
+      </div>
+
       <TotalDifference>
         <h3>Similarity</h3>
         <h2
@@ -518,14 +535,13 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
             percentage >= 0 ? `Exact similarity: ${percentage}%` : undefined
           }
         >
-          {percentage >= 0 ? `${percentage.toFixed(2)}%` : 'N/A'}
+          {percentage >= 0
+            ? percentage > 99 && percentage !== 100
+              ? `${percentage.toString().substring(0, 5)}%`
+              : `${percentage.toFixed(2)}%`
+            : 'N/A'}
         </h2>
       </TotalDifference>
-      <div>
-        {/* @TODO Looks like the editor is able to parse and check if there are errors? */}
-        <div dangerouslySetInnerHTML={{ __html: previousParseError }} />
-        <div dangerouslySetInnerHTML={{ __html: currentParseError }} />
-      </div>
     </Wrapper>
   )
 }
