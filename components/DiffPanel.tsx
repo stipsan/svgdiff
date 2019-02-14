@@ -377,6 +377,7 @@ const TotalDifference = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  padding-bottom: 15px;
 
   h3 {
     color: #4a4a4a;
@@ -511,6 +512,12 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
         <canvas ref={diffCanvasRef} />
       </DifferenceDiff>
 
+      <div>
+        {/* @TODO Looks like the editor is able to parse and check if there are errors? */}
+        <div dangerouslySetInnerHTML={{ __html: previousParseError }} />
+        <div dangerouslySetInnerHTML={{ __html: currentParseError }} />
+      </div>
+
       <TotalDifference>
         <h3>Similarity</h3>
         <h2
@@ -521,11 +528,6 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
           {percentage >= 0 ? `${percentage.toFixed(2)}%` : 'N/A'}
         </h2>
       </TotalDifference>
-      <div>
-        {/* @TODO Looks like the editor is able to parse and check if there are errors? */}
-        <div dangerouslySetInnerHTML={{ __html: previousParseError }} />
-        <div dangerouslySetInnerHTML={{ __html: currentParseError }} />
-      </div>
     </Wrapper>
   )
 }
