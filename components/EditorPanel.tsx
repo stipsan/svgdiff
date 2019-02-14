@@ -1,5 +1,6 @@
 import { styled } from 'linaria/react'
 import React from 'react'
+import { alternativeSvg, defaultSvg } from '../data'
 import Editor from './Editor'
 
 const Wrapper = styled.section`
@@ -44,8 +45,18 @@ const EditorPanel: React.FunctionComponent<EditorPanelProps> = props => {
 
   return (
     <Wrapper>
-      <Editor name="a" value={previous} setValue={setPrevious} />
-      <Editor name="b" value={current} setValue={setCurrent} />
+      <Editor
+        name="a"
+        value={previous}
+        setValue={setPrevious}
+        demo={defaultSvg}
+      />
+      <Editor
+        name="b"
+        value={current}
+        setValue={setCurrent}
+        demo={alternativeSvg}
+      />
       <Footer>
         {/*<Link href="/help"><a>help</a></Link>*/}
         <a
