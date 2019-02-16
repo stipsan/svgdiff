@@ -10,12 +10,7 @@ export const defaultSvg = `
       <feComposite in="shadowOffsetOuter1" in2="shadowInner" operator="out" result="shadowOffsetOuter1"/>
       <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"/>
       <feColorMatrix in="shadowBlurOuter1" 
-        values="
-           0 0 0 0 0.537254902
-           0 0 0 0 0.592156863
-           0 0 0 0 0.639215686
-           0 0 0 1 0
-        "
+        values="0 0 0 0 0.537254902 0 0 0 0 0.592156863 0 0 0 0 0.639215686 0 0 0 1 0"
       />
     </filter>
   </defs>
@@ -39,12 +34,7 @@ export const alternativeSvg = `
       <feComposite in="shadowOffsetOuter1" in2="shadowInner" operator="out" result="shadowOffsetOuter1"/>
       <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"/>
       <feColorMatrix in="shadowBlurOuter1" 
-        values="
-           0 0 0 0 0
-           0 0 0 0 0.04
-           0 0 0 0 0.07
-           0 0 0 0.25 0
-        "
+        values="0 0 0 0 0 0 0 0 0 0.04 0 0 0 0 0.07 0 0 0 0.25 0"
       />
     </filter>
   </defs>
