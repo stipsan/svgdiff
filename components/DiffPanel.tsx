@@ -412,7 +412,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const { previous, current } = props
 
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
-  const [size, setSize] = useState(512)
+  const [size, setSize] = useState(256)
   const [threshold, setThreshold] = useState(0)
   const [color, setColor] = useState('#ffffff')
   const dimensions = useMemo(() => ({ height: size, width: size }), [size])
