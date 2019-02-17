@@ -1,7 +1,8 @@
 
 import React from 'react'
 import Document, { Head, Main, NextScript } from 'next/document'
-import { GA_TRACKING_ID } from '../lib/gtag'
+
+const GA_TRACKING_ID = 'UA-25067435-7'
 
 export default class extends Document {
   render () {
