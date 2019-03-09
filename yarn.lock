@@ -4095,10 +4095,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-linaria@1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/linaria/-/linaria-1.1.4.tgz#ef833e25626a897b89ad218081869860611aee31"
-  integrity sha512-XHK/doHf1FkDqXU/mQGxJLLfHatlM0RTr5Yx1+c97EOc/RRvwSvsMrtQ9VgefSNYllk+yJ5h3hkrPaf1PJeEww==
+linaria@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/linaria/-/linaria-1.3.1.tgz#f02f86b55e61865bb53773f0481a1bdfc456a209"
+  integrity sha512-bqY26gfXDd/OdjH+jNC/UeM6q3whQdW9OaeHaSuZgXKiT4IZ9JYrMs53UnCroxDwnhDZTnMZLapNrdv4PqCnxA==
   dependencies:
     "@babel/core" "^7.3.3"
     "@babel/generator" "^7.3.3"
@@ -4118,6 +4118,7 @@ linaria@1.1.4:
     react-is "^16.8.3"
     rollup-pluginutils "^2.4.1"
     source-map "^0.7.3"
+    strip-ansi "^5.0.0"
     stylis "^3.5.4"
     yargs "^13.2.1"
 
