@@ -21,7 +21,7 @@
     "polished": "3.2.0",
     "postcss-preset-env": "6.6.0",
     "react": "16.8.6",
-    "react-ace": "6.4.0",
+    "react-ace": "6.5.0",
     "react-dom": "16.8.6"
   },
   "devDependencies": {
