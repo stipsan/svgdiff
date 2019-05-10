@@ -7,7 +7,7 @@ const Layout = styled.div`
   display: flex;
   height: 100vh;
   /* @TODO show a warning instead of forcing the min width */
-  min-width: 1440px;
+  min-width: 990px;
 `
 
 const Index: React.FunctionComponent = () => {
