@@ -95,12 +95,19 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
         <AceEditor
           mode="xml"
           theme="monokai"
+          name={`${props.name}-editor`}
           onChange={value => setValue(value)}
           fontSize={14}
           showPrintMargin={false}
           value={value}
           width={`${width}px`}
           height={`${height}px`}
+          onLoad={editor => {
+            // Remove annoying keyboard bindings
+            ;['indent', 'outdent', 'gotoline', 'showSettingsMenu'].forEach(
+              cmd => editor.commands.removeCommand(cmd)
+            )
+          }}
         />
       </EditorContainer>
     </Wrapper>
