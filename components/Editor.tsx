@@ -41,6 +41,7 @@ type EditorProps = {
   value: string
   setValue: (value: string) => void
   demo: string
+  commands?: any
 }
 
 const Toolbar = styled.div`
