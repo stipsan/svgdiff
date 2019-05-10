@@ -106,6 +106,7 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
           onLoad={editor => {
             // Remove annoying keyboard bindings
             ;['indent', 'outdent', 'gotoline', 'showSettingsMenu'].forEach(
+              // @ts-ignore
               cmd => editor.commands.removeCommand(cmd)
             )
           }}
