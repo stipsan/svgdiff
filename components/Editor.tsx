@@ -109,6 +109,7 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
               cmd => editor.commands.removeCommand(cmd)
             )
           }}
+          style={{}}
         />
       </EditorContainer>
     </Wrapper>
