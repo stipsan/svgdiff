@@ -4,12 +4,12 @@ import dynamic from 'next/dynamic'
 import htmlParser from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import React, { useRef } from 'react'
-import { AceEditorProps } from 'react-ace'
+import { IAceEditorProps } from 'react-ace'
 import { button } from '../lib/design'
 import Upload from './Upload'
 
 // Uglyness just to work around react-ace not working in SSR, and not being able to use React.lazy for the same reason
-const AceEditor = dynamic<AceEditorProps>(
+const AceEditor = dynamic<IAceEditorProps>(
   // @ts-ignore
   async () => {
     const AceEditor = await import('react-ace')
