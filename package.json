@@ -21,9 +21,9 @@
     "normalize.css": "8.0.1",
     "polished": "3.4.1",
     "postcss-preset-env": "6.6.0",
-    "react": "16.8.6",
+    "react": "16.10.2",
     "react-ace": "7.0.2",
-    "react-dom": "16.8.6"
+    "react-dom": "16.10.2"
   },
   "devDependencies": {
     "@types/next": "8.0.5",
