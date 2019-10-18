@@ -1,12 +1,6 @@
 {
   "extends": [
     "config:js-app",
-    "packages:eslint"
-  ],
-  "packageRules": [
-    {
-      "packageNames": ["typescript"],
-      "packagePatterns": ["^@types/"]
-    }
+    "github>finn-no/renovate-presets:js"
   ]
 }
