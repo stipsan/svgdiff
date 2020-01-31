@@ -12,8 +12,8 @@ const AceEditor = dynamic<import('react-ace/lib/ace').IAceEditorProps>(
   // @ts-ignore
   async () => {
     const AceEditor = await import('react-ace')
-    await import('brace/mode/xml')
-    await import('brace/theme/monokai')
+    await import('ace-builds/src-noconflict/mode-java')
+    await import('ace-builds/src-noconflict/theme-monokai')
     return AceEditor
   },
   { ssr: false }

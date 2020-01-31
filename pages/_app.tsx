@@ -1,5 +1,5 @@
 import { styled } from 'linaria/react'
-import App, { Container } from 'next/app'
+import App from 'next/app'
 import Head from 'next/head'
 import 'normalize.css'
 import React from 'react'
@@ -13,7 +13,7 @@ export default class extends App {
     const { Component, pageProps } = this.props
 
     return (
-      <Container>
+      <>
         <Head>
           <title>svgdiff</title>
           <meta charSet="utf-8" />
@@ -25,7 +25,7 @@ export default class extends App {
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </Container>
+      </>
     )
   }
 }

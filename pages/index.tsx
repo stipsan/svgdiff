@@ -1,5 +1,6 @@
 import { styled } from 'linaria/react'
-import React, { useState } from 'react'
+// @ts-ignore
+import React, { useState, useDeferredValue } from 'react'
 import DiffPanel from '../components/DiffPanel'
 import EditorPanel from '../components/EditorPanel'
 
@@ -14,6 +15,13 @@ const Index: React.FunctionComponent = () => {
   const [previous, setPrevious] = useState('')
   const [current, setCurrent] = useState('')
 
+  const deferredPrevious = useDeferredValue(previous, {
+    timeoutMs: 5000
+  })
+  const deferredCurrent = useDeferredValue(current, {
+    timeoutMs: 5000
+  })
+
   return (
     <Layout>
       <EditorPanel
@@ -22,7 +30,7 @@ const Index: React.FunctionComponent = () => {
         setPrevious={setPrevious}
         setCurrent={setCurrent}
       />
-      <DiffPanel previous={previous} current={current} />
+      <DiffPanel previous={deferredPrevious} current={deferredCurrent} />
     </Layout>
   )
 }

@@ -1,5 +1,14 @@
 import { styled } from 'linaria/react'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+// @ts-ignore
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useDeferredValue,
+  useLayoutEffect
+} from 'react'
 import * as parsers from '../lib/parsers'
 
 const Wrapper = styled.section`
@@ -32,6 +41,7 @@ const useSvgParser = (
 ): [string, string] => {
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
+
   // @TODO rewrite this to useMemo, unless the btoa and SSR becomes an issue?
   useEffect(() => {
     if (!svgText.trim()) {
@@ -72,6 +82,7 @@ const useSvgParser = (
     }
 
     setValue(`data:image/svg+xml,${encodeURI(svghtml).replace(/#/g, '%23')}`)
+    // @TODO split svg parsing into multiple memoized steps
   }, [svgText])
 
   return [value, error]
@@ -191,7 +202,7 @@ const useDraw = (
   const nextTask = useRef(null)
   const [ready, setReady] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!datauri) {
       return
     }
@@ -276,7 +287,7 @@ const useDiff = (
     [threshold]
   )
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (previousCanvas && currentCanvas && canvasRef.current) {
       const can = canvasRef.current
       const ctx = can.getContext('2d', { alpha: false })
@@ -369,6 +380,7 @@ const useDiff = (
       }
 
       ctx.putImageData(compareData, 0, 0)
+
       if (!fullyEqual) {
         setPercentage((correctPixels / (compareData.data.length / 4)) * 100)
       } else {
@@ -412,7 +424,10 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   const { previous, current } = props
 
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
-  const [size, setSize] = useState(256)
+  const [realtimeSize, setSize] = useState(256)
+  const size = useDeferredValue(realtimeSize, {
+    timeoutMs: 5000
+  })
   const [threshold, setThreshold] = useState(0)
   const [color, setColor] = useState('#ffffff')
   const dimensions = useMemo(() => ({ height: size, width: size }), [size])
