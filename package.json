@@ -22,7 +22,7 @@
     "polished": "^3.6.3",
     "postcss-preset-env": "^6.7.0",
     "react": "^16.13.1",
-    "react-ace": "^7.0.2",
+    "react-ace": "^8.1.0",
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
