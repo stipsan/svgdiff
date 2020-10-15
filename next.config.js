@@ -5,7 +5,6 @@ module.exports = withCSS({
     const tsRule = config.module.rules.findIndex((loader) =>
       loader.test.test('test.tsx')
     )
-    console.log(config.module.rules[tsRule].use)
     // Dirty dirty dirty hack to make the zero runtime stuff work
     config.module.rules[tsRule].use = [
       ...[].concat(config.module.rules[tsRule].use),
