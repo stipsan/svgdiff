@@ -1,13 +1,10 @@
-
-import React from 'react'
-import Document, { Head, Main, NextScript } from 'next/document'
-
+import Document, { Html, Head, Main, NextScript } from 'next/document'
 const GA_TRACKING_ID = 'UA-25067435-7'
 
-export default class extends Document {
-  render () {
+export default class CustomDocument extends Document {
+  render() {
     return (
-      <html>
+      <Html>
         <Head>
           <script
             async
@@ -20,7 +17,7 @@ export default class extends Document {
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_TRACKING_ID}');
-          `
+          `,
             }}
           />
         </Head>
@@ -28,7 +25,7 @@ export default class extends Document {
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     )
   }
 }
