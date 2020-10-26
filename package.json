@@ -19,9 +19,9 @@
     "normalize.css": "^8.0.1",
     "polished": "^3.6.7",
     "postcss-preset-env": "^6.7.0",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "react-ace": "^7.0.2",
-    "react-dom": "^16.14.0"
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
     "@types/node": "^14.14.2",
