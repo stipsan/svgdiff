@@ -1,6 +1,4 @@
 {
-  "extends": [
-    "config:js-app",
-    "github>finn-no/renovate-presets:js"
-  ]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>stipsan/renovate-presets:auto"]
 }
