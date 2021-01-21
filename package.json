@@ -15,13 +15,14 @@
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
     "@zeit/next-css": "^1.0.2-canary.2",
+    "ace-builds": "^1.4.12",
     "linaria": "^2.0.2",
     "next": "^10.0.1",
     "normalize.css": "^8.0.1",
     "polished": "^4.0.3",
     "postcss-preset-env": "^6.7.0",
     "react": "^17.0.1",
-    "react-ace": "^7.0.2",
+    "react-ace": "^9.0.0",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {

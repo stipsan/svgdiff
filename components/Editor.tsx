@@ -12,8 +12,8 @@ const AceEditor = dynamic<import('react-ace/lib/ace').IAceEditorProps>(
   // @ts-ignore
   async () => {
     const AceEditor = await import('react-ace')
-    await import('brace/mode/xml')
-    await import('brace/theme/monokai')
+    await import('ace-builds/src-noconflict/mode-xml')
+    await import('ace-builds/src-noconflict/theme-monokai')
     return AceEditor
   },
   { ssr: false }
@@ -52,7 +52,7 @@ const Toolbar = styled.div`
   color: white;
 `
 
-const Editor: React.FunctionComponent<EditorProps> = props => {
+const Editor: React.FunctionComponent<EditorProps> = (props) => {
   const { value, setValue, demo } = props
   const ref = useRef(null)
   const { width, height } = useComponentSize(ref)
@@ -70,7 +70,7 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
               setValue(
                 prettier.format(value, {
                   parser: 'html',
-                  plugins: [htmlParser]
+                  plugins: [htmlParser],
                 })
               )
             }
@@ -96,17 +96,17 @@ const Editor: React.FunctionComponent<EditorProps> = props => {
           mode="xml"
           theme="monokai"
           name={`${props.name}-editor`}
-          onChange={value => setValue(value)}
+          onChange={(value) => setValue(value)}
           fontSize={14}
           showPrintMargin={false}
           value={value}
           width={`${width}px`}
           height={`${height}px`}
-          onLoad={editor => {
+          onLoad={(editor) => {
             // Remove annoying keyboard bindings
             ;['indent', 'outdent', 'gotoline', 'showSettingsMenu'].forEach(
               // @ts-ignore
-              cmd => editor.commands.removeCommand(cmd)
+              (cmd) => editor.commands.removeCommand(cmd)
             )
           }}
           style={{}}
