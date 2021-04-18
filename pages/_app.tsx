@@ -1,11 +1,7 @@
-import { styled } from 'linaria/react'
 import App from 'next/app'
 import Head from 'next/head'
-import 'normalize.css'
 
-const Layout = styled.main`
-  font-family: system-ui;
-`
+import 'tailwindcss/tailwind.css'
 
 export default class CustomApp extends App {
   render() {
@@ -21,9 +17,9 @@ export default class CustomApp extends App {
             content="initial-scale=1.0, width=device-width"
           />
         </Head>
-        <Layout>
+        <main>
           <Component {...pageProps} />
-        </Layout>
+        </main>
       </>
     )
   }

@@ -1,37 +1,6 @@
-import { styled } from 'linaria/react'
 import React from 'react'
 import { alternativeSvg, defaultSvg } from '../data'
 import Editor from './Editor'
-
-const Wrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-  padding: 20px 25px;
-  width: 33%;
-`
-
-const Footer = styled.footer`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 10px;
-
-  a {
-    color: #34495e;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-
-    &:not(:first-of-type) {
-      margin-left: 6px;
-
-      &::before {
-        content: '•';
-        margin-right: 6px;
-      }
-    }
-  }
-`
 
 type EditorPanelProps = {
   previous: string
@@ -40,11 +9,11 @@ type EditorPanelProps = {
   setCurrent: (payload: string) => void
 }
 
-const EditorPanel: React.FunctionComponent<EditorPanelProps> = props => {
+const EditorPanel: React.FunctionComponent<EditorPanelProps> = (props) => {
   const { previous, current, setPrevious, setCurrent } = props
 
   return (
-    <Wrapper>
+    <section className="flex flex-col px-5 py-4 w-1/3">
       <Editor
         name="a"
         value={previous}
@@ -57,16 +26,19 @@ const EditorPanel: React.FunctionComponent<EditorPanelProps> = props => {
         setValue={setCurrent}
         demo={alternativeSvg}
       />
-      <Footer>
+      <footer className="flex items-center justify-center pt-2 text-gray-600 text-sm font-bold">
         {/*<Link href="/help"><a>help</a></Link>*/}
         <a
+          className="mr-1.5 focus:underline focus:outline-none"
           href="https://twitter.com/stipsan"
           target="_blank"
           rel="noopener noreferrer"
         >
           twitter
         </a>
+        •
         <a
+          className="ml-1.5 focus:underline focus:outline-none"
           href="https://github.com/stipsan/svgdiff"
           target="_blank"
           rel="noopener noreferrer"
@@ -74,8 +46,8 @@ const EditorPanel: React.FunctionComponent<EditorPanelProps> = props => {
           github
         </a>
         {/*<a href="@TODO" target="_blank" rel="noopener noreferrer">blogpost</a>*/}
-      </Footer>
-    </Wrapper>
+      </footer>
+    </section>
   )
 }
 

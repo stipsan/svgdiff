@@ -1,11 +1,10 @@
 import useComponentSize from '@rehooks/component-size'
-import { styled } from 'linaria/react'
-import dynamic from 'next/dynamic'
 import htmlParser from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import React, { useRef } from 'react'
 import { button } from '../lib/design'
 import Upload from './Upload'
+import dynamic from 'next/dynamic'
 
 // Uglyness just to work around react-ace not working in SSR, and not being able to use React.lazy for the same reason
 const AceEditor = dynamic<import('react-ace/lib/ace').IAceEditorProps>(
@@ -13,27 +12,11 @@ const AceEditor = dynamic<import('react-ace/lib/ace').IAceEditorProps>(
   async () => {
     const AceEditor = await import('react-ace')
     await import('ace-builds/src-noconflict/mode-xml')
-    await import('ace-builds/src-noconflict/theme-monokai')
+    await import('ace-builds/src-noconflict/theme-solarized_dark')
     return AceEditor
   },
   { ssr: false }
 )
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 50%;
-  border-radius: 8px;
-  overflow: hidden;
-
-  &:not(:first-child) {
-    margin-top: 20px;
-  }
-`
-
-const EditorContainer = styled.div`
-  flex: 1;
-`
 
 type EditorProps = {
   name: string
@@ -43,23 +26,14 @@ type EditorProps = {
   commands?: any
 }
 
-const Toolbar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  padding: 4px;
-  background: hsla(72, 9%, 22%, 1);
-  color: white;
-`
-
 const Editor: React.FunctionComponent<EditorProps> = (props) => {
   const { value, setValue, demo } = props
   const ref = useRef(null)
   const { width, height } = useComponentSize(ref)
 
   return (
-    <Wrapper>
-      <Toolbar>
+    <div className="flex flex-col h-1/2 rounded-lg overflow-hidden mt-5 first:mt-0">
+      <div className="flex items-center justify-start p-1 bg-[#01313f] text-white">
         <Upload id={`${props.name}-upload`} onUpload={setValue} />
 
         {value.trim() ? (
@@ -90,11 +64,11 @@ const Editor: React.FunctionComponent<EditorProps> = (props) => {
             Demo
           </button>
         )}
-      </Toolbar>
-      <EditorContainer ref={ref}>
+      </div>
+      <div className="flex-1" ref={ref}>
         <AceEditor
           mode="xml"
-          theme="monokai"
+          theme="solarized_dark"
           name={`${props.name}-editor`}
           onChange={(value) => setValue(value)}
           fontSize={14}
@@ -111,8 +85,8 @@ const Editor: React.FunctionComponent<EditorProps> = (props) => {
           }}
           style={{}}
         />
-      </EditorContainer>
-    </Wrapper>
+      </div>
+    </div>
   )
 }
 

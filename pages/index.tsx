@@ -1,21 +1,26 @@
-import { styled } from 'linaria/react'
-import React, { useState } from 'react'
+import dynamic from 'next/dynamic'
+import { useEffect, useState } from 'react'
+
+///*
 import DiffPanel from '../components/DiffPanel'
 import EditorPanel from '../components/EditorPanel'
+// */
+/*
+const DiffPanel = dynamic(() => import('../components/DiffPanel'), {
+  ssr: false,
+})
+const EditorPanel = dynamic(() => import('../components/EditorPanel'), {
+  ssr: false,
+})
+// */
 
-const Layout = styled.div`
-  display: flex;
-  height: 100vh;
-  /* @TODO show a warning instead of forcing the min width */
-  min-width: 990px;
-`
-
-const Index: React.FunctionComponent = () => {
+export default function IndexPage() {
   const [previous, setPrevious] = useState('')
   const [current, setCurrent] = useState('')
 
   return (
-    <Layout>
+    // @TODO show a warning instead of forcing the min width
+    <div className="flex h-screen min-w-[990px]">
       <EditorPanel
         previous={previous}
         current={current}
@@ -23,8 +28,6 @@ const Index: React.FunctionComponent = () => {
         setCurrent={setCurrent}
       />
       <DiffPanel previous={previous} current={current} />
-    </Layout>
+    </div>
   )
 }
-
-export default Index

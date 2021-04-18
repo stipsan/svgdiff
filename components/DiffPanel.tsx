@@ -1,25 +1,7 @@
-import { styled } from 'linaria/react'
+/* eslint-disable eqeqeq */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import cx from 'classnames'
 import * as parsers from '../lib/parsers'
-
-const Wrapper = styled.section`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-
-  canvas {
-    margin-left: auto;
-    margin-right: auto;
-  }
-`
-
-const Toolbar = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  margin-right: 25px;
-  padding: 4px 8px;
-`
 
 type DiffPanelProps = {
   previous: string
@@ -72,6 +54,7 @@ const useSvgParser = (
     }
 
     setValue(`data:image/svg+xml,${encodeURI(svghtml).replace(/#/g, '%23')}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [svgText])
 
   return [value, error]
@@ -153,34 +136,6 @@ const draw = (
   )
 }
 
-const TwoUpDiff = styled.div`
-  display: flex;
-  height: 100%;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
-  flex: 1;
-  overflow: auto;
-
-  canvas {
-    box-shadow: hsla(0, 0%, 0%, 0.1) 0 0 0 1px;
-    max-width: 100%;
-  }
-`
-
-const DifferenceDiff = styled.div`
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-
-  canvas {
-    box-shadow: hsla(0, 0%, 0%, 0.1) 0 0 0 1px;
-    max-width: 100%;
-  }
-`
-
 const useDraw = (
   datauri: string,
   size: CanvasSize,
@@ -215,7 +170,7 @@ const useDraw = (
       setReady(false)
 
       const img = new Image()
-      img.onload = function() {
+      img.onload = function () {
         if (taskId !== currentTask.current) {
           return
         }
@@ -225,7 +180,7 @@ const useDraw = (
         setReady(true)
         next()
       }
-      img.onerror = function(error) {
+      img.onerror = function (error) {
         if (taskId !== currentTask.current) {
           return
         }
@@ -377,38 +332,13 @@ const useDiff = (
     } else {
       setPercentage(-1)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousCanvas, currentCanvas, size, color, threshold])
 
   return [canvasRef, percentage]
 }
 
-const TotalDifference = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding-bottom: 15px;
-
-  h3 {
-    color: #4a4a4a;
-    display: block;
-    font-size: 11px;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-  }
-  h2 {
-    color: #363636;
-    font-size: 2rem;
-    font-weight: 600;
-    line-height: 1.125;
-    margin-top: 5px;
-    margin-bottom: 20px;
-    font-feature-settings: 'tnum';
-  }
-`
-
-const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
+const DiffPanel: React.FunctionComponent<DiffPanelProps> = (props) => {
   const { previous, current } = props
 
   const [mode, setMode] = useState<'two-up' | 'difference'>('two-up')
@@ -442,8 +372,8 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
   )
 
   return (
-    <Wrapper>
-      <Toolbar>
+    <section className="flex flex-1 flex-col">
+      <nav className="flex justify-between mt-5 mr-6 px-1 py-2">
         <div>
           mode:&nbsp;&nbsp;
           <label>
@@ -474,7 +404,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
             step="32"
             max="1024"
             value={size}
-            onChange={event =>
+            onChange={(event) =>
               setSize(
                 Math.max(
                   1,
@@ -490,7 +420,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
           <input
             type="color"
             value={color}
-            onChange={event => setColor(event.target.value)}
+            onChange={(event) => setColor(event.target.value)}
           />
         </label>
         <label title="A value of 0 means that colors must be exactly the same to be equal. While a value of 2 means #FFFFFF and #FEFEFE are equal.">
@@ -501,7 +431,7 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
             step="1"
             max="254"
             value={threshold}
-            onChange={event =>
+            onChange={(event) =>
               setThreshold(
                 Math.max(
                   0,
@@ -511,16 +441,34 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
             }
           />
         </label>
-      </Toolbar>
-      <TwoUpDiff style={{ display: mode === 'two-up' ? undefined : 'none' }}>
-        <canvas key="previous" ref={previousCanvasRef} />
-        <canvas key="current" ref={currentCanvasRef} />
-      </TwoUpDiff>
-      <DifferenceDiff
-        style={{ display: mode === 'difference' ? undefined : 'none' }}
+      </nav>
+      <div
+        className={cx(
+          'flex flex-1 h-full justify-around items-center flex-wrap overflow-auto',
+          { '!hidden': mode === 'difference' }
+        )}
       >
-        <canvas ref={diffCanvasRef} />
-      </DifferenceDiff>
+        <canvas
+          key="previous"
+          ref={previousCanvasRef}
+          className="mx-auto max-w-full border border-gray-100"
+        />
+        <canvas
+          key="current"
+          ref={currentCanvasRef}
+          className="mx-auto max-w-full border border-gray-100"
+        />
+      </div>
+      <div
+        className={cx('flex flex-1 h-full justify-center items-center', {
+          '!hidden': mode === 'two-up',
+        })}
+      >
+        <canvas
+          ref={diffCanvasRef}
+          className="mx-auto max-w-full border border-gray-100"
+        />
+      </div>
 
       <div>
         {/* @TODO Looks like the editor is able to parse and check if there are errors? */}
@@ -528,9 +476,12 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
         <div dangerouslySetInnerHTML={{ __html: currentParseError }} />
       </div>
 
-      <TotalDifference>
-        <h3>Similarity</h3>
+      <div className="flex items-center justify-center flex-col pb-5">
+        <h3 className="text-[11px] uppercase font-bold tracking-wider text-gray-600 mb-0.5">
+          Similarity
+        </h3>
         <h2
+          className="mb-1 mt-0.5 text-3xl font-bold leading-9 text-gray-800 tabular-nums"
           title={
             percentage >= 0 ? `Exact similarity: ${percentage}%` : undefined
           }
@@ -541,8 +492,8 @@ const DiffPanel: React.FunctionComponent<DiffPanelProps> = props => {
               : `${percentage.toFixed(2)}%`
             : 'N/A'}
         </h2>
-      </TotalDifference>
-    </Wrapper>
+      </div>
+    </section>
   )
 }
 
