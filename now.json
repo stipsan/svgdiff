@@ -1,7 +1,7 @@
 {
   "name": "svgdiff",
   "version": 2,
-  "alias": ["svgdiff.now.sh"],
+  "alias": ["svgdiff.cocody.dev"],
   "github": {
     "enabled": true,
     "silent": true
